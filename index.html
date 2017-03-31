@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <META http-equiv=Content-Type content="text/html; charset=utf8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="full-screen" content="yes">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="360-fullscreen" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, minimal-ui, user-scalable=no">
+    <meta name="viewport" content="width=480,initial-scale=1">
+    <title>猴年红包练习室</title>
+    <style>
+        body,canvas,div{
+            -moz-user-select:none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            -khtml-user-select:none;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+        }
+    </style>
+</head>
+<body style="width: 100%; background-color: #dd1021;background: url('./img/logo.png')">
+    <div style="display: none;"><img src="./img/logo.png"></div>
+    <audio id="game_sound" style="display: none;" src="http://www.025.cn/userphoto/app/hongbao/bg.mp3" type="audio/mp3" loop="loop"></audio>
+    <audio id="sound_eff1" style="display: none;" src="http://www.025.cn//userphoto/app/hongbao/click.mp3" type="audio/mp3"></audio>
+    <audio id="sound_eff2" style="display: none;" src="http://www.025.cn//userphoto/app/hongbao/over.wav" type="audio/wav"></audio>
+
+    <canvas id="gameCanvas" style="transform-origin: 0px 0px 0px;"></canvas>
+
+    <script type="text/javascript" src="cocos2d-js-v3.9-lite.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="main.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="hongbao.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="jquery-1.11.1.min.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script type="text/javascript">
+        var res = {hb:"img/hb.jpg", bomb:'img/bond.jpg', st:"img/st.jpg", stBtn:"img/btn_st.png", bg_top:"img/bg1.png", bg_img:"img/bg-img.jpg",
+                tBg:"img/time_bg.png",num3:"img/3.png", num2:"img/2.png",num1:"img/1.png", result:"img/result.jpg", over:"img/gameover.png",
+                hbIcon:"img/chj_icon.png", rewIcon:"img/pack_icon.png", wishIcon:"img/wish_icon.png",line1:"img/line.png",
+                again:"img/btn-again.png", ag_hover:"img/btn-again-hover.png", share:"img/btn-pk.png",sh_hover:"img/btn-pk-hover.png", tip:"img/tip.png",
+                sound_on:"img/icon-sound.png",sound_off:"img/icon-sound-off.png", pLink:"img/link.png"
+
+//                sound_bg: "sound/bg.mp3",sound_hb: "sound/click.mp3",sound_over: "sound/over.wav"       // cocos2d 加载
+        };
+        window.onload = function(){
+
+            cc.game.onStart = function(){
+                // 预加载资源
+                cc.LoaderScene.preload(['img/bg1.png'], function () {
+                    cc.view.adjustViewPort(true);
+                    cc.view.setDesignResolutionSize(640, 960, cc.ResolutionPolicy.EXACT_FIT);  // 适配EXACT_FIT
+                    cc.view.resizeWithBrowserSize(true);
+                    cc.director.setDisplayStats(false);
+
+                    cc.director.runScene(new StartScene());
+                }, this);
+            };
+                // 开始加载引擎和游戏脚本，准备游戏执行环境
+            cc.game.prepare();
+
+                // 开始游戏
+            cc.game.run("gameCanvas");
+
+            sendCmd.sendAjaxData(1);
+        };
+/**
+        wx.config({
+            debug: true,                    // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            appId: 'wx1211f663c71c39e7',    // 必填，公众号的唯一标识
+            timestamp: 1,                   // 必填，生成签名的时间戳
+            nonceStr: '',                   // 必填，生成签名的随机串
+            signature: '',                  // 必填，签名，见附录1
+            jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+        });
+        wx.ready(function(){  // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+
+            // 获取“分享到朋友圈”按钮点击状态及自定义分享内容接口
+            wx.onMenuShareTimeline({
+                title: '猴年红包练习室', // 分享标题
+                link:"分享的url,以http或https开头",
+                imgUrl: "分享图标的url,以http或https开头" // 分享图标
+            });
+            // 获取“分享给朋友”按钮点击状态及自定义分享内容接口
+            wx.onMenuShareAppMessage({
+                title: '猴年红包练习室', // 分享标题
+                desc: '', // 分享描述
+                link: '', // 分享链接
+                imgUrl: '', // 分享图标
+                type: '', // 分享类型,music、video或link，不填默认为link
+                dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                success: function () {
+                    // 用户确认分享后执行的回调函数
+                },
+                cancel: function () {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+        });
+ ***/
+
+    </script>
+</body>
+</html>
